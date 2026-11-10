@@ -1,5 +1,1 @@
-# Core solver uses Python standard library only.
-# Optional GUI and figures:
-pygame==2.5.2
-matplotlib==3.8.4
-pytest==8.2.2
+python-sat>=0.1.8.dev1

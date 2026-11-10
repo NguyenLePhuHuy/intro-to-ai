@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>N-Queens Lab</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Ctext y=%2726%27 font-size=%2728%27%3E%E2%99%9B%3C/text%3E%3C/svg%3E">
+<script>
+  /* Áp dụng giao diện sáng/tối trước khi vẽ để không bị nháy */
+  (function () {
+    var t = localStorage.getItem('nq-theme');
+    if (!t) t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.dataset.theme = t;
+  })();
+</script>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div class="brand">
+      <div class="logo">♛</div>
+      <div>
+        <h1>N-Queens Lab</h1>
+        <p>Local Search &amp; Propositional Logic — quan sát trực quan SAT (Glucose3) và Min-Conflicts</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <nav id="tabs">
+        <button data-tab="sat" class="active"><span class="num">1</span> Logic mệnh đề &amp; SAT</button>
+        <button data-tab="mc"><span class="num">2</span> Min-Conflicts</button>
+        <button data-tab="exp"><span class="num">3</span> Thực nghiệm</button>
+        <span id="tab-ink" class="tab-ink"></span>
+      </nav>
+      <button id="theme-btn" class="icon-btn" title="Đổi giao diện sáng / tối">◐</button>
+    </div>
+  </div>
+</header>
+
+<main>
+<!-- ============ TAB 1: SAT ============ -->
+<section id="tab-sat" class="tab active">
+  <div class="toolbar">
+    <label class="field">Kích thước bàn cờ N <input id="sat-n" type="number" min="4" max="60" value="8"></label>
+    <button id="sat-run" class="primary">♛ Giải ngay bằng Glucose3</button>
+    <button id="sat-show-final" class="ghost" title="Nhảy thẳng tới bàn cờ nghiệm cuối">Thành phẩm (Bước 9)</button>
+    <button id="sat-walk" class="ghost" title="Phát lần lượt từ Bước 1 đến Bước 9">▶ Xem từng bước (1 → 9)</button>
+    <span id="sat-status" class="status"></span>
+    <span class="kbd-hint"><kbd>←</kbd><kbd>→</kbd> chuyển bước · <kbd>Space</kbd> chạy/dừng</span>
+  </div>
+  <div id="sat-body" class="hidden">
+    <div id="sat-banner" class="result-banner"></div>
+    <div class="grid-2">
+      <div class="card board-card">
+        <div class="board-head">
+          <span id="sat-board-badge" class="badge"></span>
+          <span id="sat-board-sub" class="board-sub"></span>
+        </div>
+        <canvas id="sat-board" class="board"></canvas>
+        <div class="legend">
+          <span><span class="sw blue"></span>ô thuộc ràng buộc mẫu</span>
+          <span><span class="sw queen-ok">♛</span>quân hậu hợp lệ</span>
+        </div>
+      </div>
+      <div class="stack">
+        <div class="card">
+          <div id="sat-detail" class="detail">
+            <h2 id="sat-title"></h2>
+            <p id="sat-text"></p>
+            <div id="sat-logic" class="logic"></div>
+            <div id="sat-samples"></div>
+          </div>
+          <div class="counters">
+            <div><b id="sat-added">0</b><span>mệnh đề vừa thêm</span></div>
+            <div><b id="sat-total">0</b><span>tổng mệnh đề CNF</span></div>
+            <div><b id="sat-lines">—</b><span>nhóm ô (đường)</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="player">
+            <button id="sat-prev" class="icon-btn" title="Bước trước">◀</button>
+            <button id="sat-play" class="primary play">▶ Chạy tự động</button>
+            <button id="sat-next" class="icon-btn" title="Bước sau">▶</button>
+            <input id="sat-slider" type="range" min="0" max="0" value="0">
+            <span id="sat-pos" class="pos"></span>
+          </div>
+          <ol id="sat-steps" class="steps"></ol>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Tóm tắt mô hình CNF &amp; kết quả Glucose3</h3>
+      <div id="sat-summary" class="summary"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TAB 2: Min-Conflicts ============ -->
+<section id="tab-mc" class="tab">
+  <div class="toolbar">
+    <label class="field">N <input id="mc-n" type="number" min="4" max="200" value="12"></label>
+    <label class="field">Seed <input id="mc-seed" type="number" min="0" value="1"></label>
+    <label class="field">Số bước tối đa <input id="mc-max" type="number" min="10" max="200000" value="5000"></label>
+    <button id="mc-run" class="primary">♛ Chạy &amp; so sánh (cùng seed)</button>
+    <span id="mc-status" class="status"></span>
+  </div>
+  <div id="mc-body" class="hidden">
+    <div id="mc-banner" class="result-banner"></div>
+    <div class="card player-card">
+      <div class="player">
+        <button id="mc-start" class="icon-btn" title="Trạng thái khởi tạo (Đầu)">⏮ Đầu</button>
+        <button id="mc-prev" class="icon-btn" title="Bước trước">◀</button>
+        <button id="mc-play" class="primary play">▶ Phát quá trình</button>
+        <button id="mc-next" class="icon-btn" title="Bước sau">▶</button>
+        <button id="mc-end" class="icon-btn" title="Thành phẩm nghiệm (Cuối)">Cuối ⏭</button>
+        <input id="mc-slider" type="range" min="0" max="0" value="0">
+        <span id="mc-pos" class="pos"></span>
+        <label class="speed">Tốc độ <input id="mc-speed" type="range" min="1" max="10" value="5"></label>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="card algo std" id="mc-panel-standard">
+        <div class="algo-head">
+          <h2><span class="dot"></span>Min-Conflicts chuẩn</h2>
+          <span id="mc-badge-standard" class="badge"></span>
+        </div>
+        <p class="hint">Khởi tạo ngẫu nhiên · chọn ngẫu nhiên một hậu bị tấn công · chuyển tới cột ít xung đột nhất</p>
+        <canvas class="board" id="mc-board-standard"></canvas>
+        <div class="stats" id="mc-stats-standard"></div>
+        <canvas class="chart-small" id="mc-chart-standard"></canvas>
+      </div>
+      <div class="card algo heu" id="mc-panel-heuristic">
+        <div class="algo-head">
+          <h2><span class="dot"></span>Min-Conflicts + heuristic đề xuất</h2>
+          <span id="mc-badge-heuristic" class="badge"></span>
+        </div>
+        <p class="hint">Khởi tạo tham lam · chọn hậu bị tấn công nhiều nhất · min-conflicts có tabu &amp; khởi động lại</p>
+        <canvas class="board" id="mc-board-heuristic"></canvas>
+        <div class="stats" id="mc-stats-heuristic"></div>
+        <canvas class="chart-small" id="mc-chart-heuristic"></canvas>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TAB 3: Experiments ============ -->
+<section id="tab-exp" class="tab">
+  <div class="grid-2">
+    <div class="card">
+      <h2>Glucose3 theo N tăng dần</h2>
+      <p class="hint">Báo cáo số mệnh đề CNF và thời gian chạy của solver.</p>
+      <label class="block">Các giá trị N (N ≥ 4, phân tách bằng dấu phẩy)
+        <input id="exp-sat-ns" type="text" value="4, 6, 8, 10, 12, 16, 20, 24, 30, 40, 50"></label>
+      <label class="block">Số lần lặp để lấy trung bình <input id="exp-sat-rep" type="number" min="1" max="10" value="3"></label>
+      <button id="exp-sat-run" class="primary">Chạy thực nghiệm SAT</button>
+      <div class="progress hidden" id="exp-sat-prog"><div></div><span></span></div>
+    </div>
+    <div class="card">
+      <h2>Min-Conflicts: chuẩn vs heuristic</h2>
+      <p class="hint">Mỗi N chạy nhiều lần với cùng bộ seed cho cả hai thuật toán.</p>
+      <label class="block">Các giá trị N
+        <input id="exp-mc-ns" type="text" value="8, 16, 32, 64, 128, 256, 512, 1000"></label>
+      <div class="row">
+        <label>Số lần chạy / N <input id="exp-mc-runs" type="number" min="1" max="100" value="20"></label>
+        <label>Số bước tối đa <input id="exp-mc-max" type="number" min="100" max="1000000" value="100000"></label>
+      </div>
+      <button id="exp-mc-run" class="primary">Chạy thực nghiệm Min-Conflicts</button>
+      <div class="progress hidden" id="exp-mc-prog"><div></div><span></span></div>
+    </div>
+  </div>
+  <div id="exp-error" class="error hidden"></div>
+  <div id="exp-empty" class="empty hidden">Chưa có kết quả thực nghiệm — bấm một trong hai nút ở trên để chạy.</div>
+  <div id="exp-sat-out" class="hidden">
+    <div class="card"><h3>Kết quả Glucose3</h3><div class="table-wrap" id="exp-sat-table"></div><p class="files" id="exp-sat-files"></p></div>
+    <div class="grid-2">
+      <div class="card"><h3>Số mệnh đề CNF theo N</h3><canvas class="chart" id="chart-sat-clauses"></canvas></div>
+      <div class="card"><h3>Thời gian theo N (ms)</h3><canvas class="chart" id="chart-sat-time"></canvas></div>
+    </div>
+  </div>
+  <div id="exp-mc-out" class="hidden">
+    <div class="card"><h3>Kết quả Min-Conflicts</h3><div class="table-wrap" id="exp-mc-table"></div><p class="files" id="exp-mc-files"></p></div>
+    <div class="grid-2">
+      <div class="card"><h3>Số bước trung bình theo N</h3><canvas class="chart" id="chart-mc-steps"></canvas></div>
+      <div class="card"><h3>Thời gian trung bình theo N (ms)</h3><canvas class="chart" id="chart-mc-time"></canvas></div>
+    </div>
+  </div>
+</section>
+</main>
+<div id="toast" class="toast"></div>
+<script src="/app.js"></script>
+</body>
+</html>

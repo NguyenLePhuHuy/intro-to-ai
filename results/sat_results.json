@@ -1,0 +1,123 @@
+[
+  {
+    "n": 4,
+    "variables": 16,
+    "clauses": 80,
+    "build_ms": 0.11740000142405431,
+    "load_ms": 0.13676667003892362,
+    "solve_ms": 0.02166666672565043,
+    "total_ms": 0.2758333381886284,
+    "satisfiable": true,
+    "valid": true
+  },
+  {
+    "n": 6,
+    "variables": 36,
+    "clauses": 296,
+    "build_ms": 0.2805333254703631,
+    "load_ms": 0.2808999949290107,
+    "solve_ms": 0.21379998846290013,
+    "total_ms": 0.7752333088622739,
+    "satisfiable": true,
+    "valid": true
+  },
+  {
+    "n": 8,
+    "variables": 64,
+    "clauses": 736,
+    "build_ms": 0.5874666676390916,
+    "load_ms": 0.6008333487746617,
+    "solve_ms": 0.09316665818914771,
+    "total_ms": 1.2814666746029009,
+    "satisfiable": true,
+    "valid": true
+  },
+  {
+    "n": 10,
+    "variables": 100,
+    "clauses": 1480,
+    "build_ms": 1.0353666633212317,
+    "load_ms": 0.9083666664082557,
+    "solve_ms": 0.21943334528865913,
+    "total_ms": 2.1631666750181466,
+    "satisfiable": true,
+    "valid": true
+  },
+  {
+    "n": 12,
+    "variables": 144,
+    "clauses": 2608,
+    "build_ms": 0.8733333282483121,
+    "load_ms": 1.0667333262972534,
+    "solve_ms": 0.08943332553220291,
+    "total_ms": 2.029499980077768,
+    "satisfiable": true,
+    "valid": true
+  },
+  {
+    "n": 16,
+    "variables": 256,
+    "clauses": 6336,
+    "build_ms": 2.081866676841552,
+    "load_ms": 1.782899994092683,
+    "solve_ms": 1.196733326651156,
+    "total_ms": 5.061499997585391,
+    "satisfiable": true,
+    "valid": true
+  },
+  {
+    "n": 20,
+    "variables": 400,
+    "clauses": 12560,
+    "build_ms": 5.677766661392525,
+    "load_ms": 4.00386667267109,
+    "solve_ms": 5.545333328579242,
+    "total_ms": 15.226966662642857,
+    "satisfiable": true,
+    "valid": true
+  },
+  {
+    "n": 24,
+    "variables": 576,
+    "clauses": 21920,
+    "build_ms": 7.264066652472441,
+    "load_ms": 7.226966670714319,
+    "solve_ms": 4.370833339635283,
+    "total_ms": 18.86186666282204,
+    "satisfiable": true,
+    "valid": true
+  },
+  {
+    "n": 30,
+    "variables": 900,
+    "clauses": 43240,
+    "build_ms": 15.557199988203744,
+    "load_ms": 11.42423334143435,
+    "solve_ms": 7.263966680814822,
+    "total_ms": 34.24540001045292,
+    "satisfiable": true,
+    "valid": true
+  },
+  {
+    "n": 40,
+    "variables": 1600,
+    "clauses": 103520,
+    "build_ms": 31.83763332587356,
+    "load_ms": 25.065200015281636,
+    "solve_ms": 4.641999995025496,
+    "total_ms": 61.544833336180695,
+    "satisfiable": true,
+    "valid": true
+  },
+  {
+    "n": 50,
+    "variables": 2500,
+    "clauses": 203400,
+    "build_ms": 68.66900000022724,
+    "load_ms": 49.34556665830314,
+    "solve_ms": 272.20980000371736,
+    "total_ms": 390.22436666224775,
+    "satisfiable": true,
+    "valid": true
+  }
+]
